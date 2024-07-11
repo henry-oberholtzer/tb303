@@ -1,6 +1,4 @@
 export * from './303Components'
-export * from './PatternList'
 export * from './Footer'
 export * from './Header'
 export * from './Navigation'
-export * from './UserWidget'

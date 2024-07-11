@@ -3,8 +3,7 @@ import { PatternTable } from "./PatternTable";
 import { Pallete303 } from "./Palette";
 import { useContext, useState } from "react";
 import { PatternClearModal } from "./PatternClearModal";
-import { usePattern, useAuth } from "../../hooks";
-import { api } from "../../scripts/api";
+import { usePattern } from "../../hooks";
 import { PatternClearModalContext } from "../../routes";
 
 const LCDContainer = styled.div<{ $width?: number, $height?: number, }>`
@@ -62,6 +61,9 @@ const LCDButton = styled.button<{ $width?: number }>`
   border: none;
   outline: 2px solid transparent;
   transition: outline 50ms;
+  &:disabled {
+    opacity: 0.5;
+  }
   &:focus, &:active {
     outline: 2px solid ${Pallete303.LCDFont};
   }
@@ -70,41 +72,9 @@ const LCDButton = styled.button<{ $width?: number }>`
   }`
 
 const PatternInfo = () => {
-  const { user } = useAuth()
   const patternClearModal = useContext(PatternClearModalContext)
-  const { pitchMode, timeMode, name, activeSection, patternObject} = usePattern()
+  const { pitchMode, timeMode, name, activeSection} = usePattern()
   const [ saveMessage, setSaveMessage ] = useState<string>("POST")
-
-  const postPattern = async () => {
-		if (user != null) {
-			const pattern = patternObject()
-			const header = {
-				'Content-Type': 'application/json', 
-				'Authorization': `Token ${user.token}`
-			}
-			const response = await api.postPattern(header, pattern)
-			return response
-		}
-	}
-
-  const handlePatternPost = () => {
-      if (!(activeSection.get === 'A' && pitchMode.get.length > 1 && timeMode.get.length > 1)) {
-        setSaveMessage("pattern is empty!")
-        setTimeout(() => {
-          setSaveMessage("POST")
-        }, 3000)
-      }
-      else if (name.get.trim().length <= 0 ) {
-        setSaveMessage("name required!")
-        setTimeout(() => {
-          setSaveMessage("POST")
-        }, 3000)
-      } else {
-        postPattern()
-        setSaveMessage("posted!")
-      }
-  }
-
   
 
   if (patternClearModal.get) {
@@ -124,12 +94,7 @@ const PatternInfo = () => {
           placeholder={"CLICK TO ADD NAME"}
           value={name.get}
           onChange={(e) => name.set(e.target.value)}/>
-          {user?.user &&
-            <LCDButton $width={8*30} onClick={handlePatternPost}>{saveMessage}</LCDButton>
-          }
-          {!user && 
-            <LCDButton $width={8*30} >Login To Post</LCDButton>
-          }
+            <LCDButton $width={8*30} >Posting Unavailable</LCDButton>
       </NameInputGroup>
       <PatternTable />
     </LCDContainer>

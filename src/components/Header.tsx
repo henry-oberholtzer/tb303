@@ -1,7 +1,6 @@
 import { Pallete303 } from "./303Components/Palette"
 import { Navigation } from "./Navigation"
 import { Logo } from "./UI"
-import { UserWidget } from "./UserWidget"
 import styled from "styled-components"
 
 const HeaderDiv = styled.div`
@@ -38,7 +37,6 @@ const Header = () => {
       </HeaderSection>
       <HeaderSection>
         <LineDivider />
-        <UserWidget />
       </HeaderSection>
     </HeaderDiv>
   )
